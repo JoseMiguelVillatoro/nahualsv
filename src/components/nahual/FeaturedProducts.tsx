@@ -53,7 +53,7 @@ export function FeaturedProducts() {
                 loading="lazy"
                 width={700}
                 height={900}
-                className="h-44 w-24 shrink-0 self-start object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-40 w-28 shrink-0 self-start object-contain transition-transform duration-300 group-hover:scale-105"
               />
               <div className="flex min-w-0 flex-col">
                 <h3 className="text-lg font-semibold leading-tight text-foreground">{p.name}</h3>

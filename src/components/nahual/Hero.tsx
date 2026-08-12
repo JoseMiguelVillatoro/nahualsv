@@ -11,7 +11,7 @@ export function Hero() {
         preserveAspectRatio="none"
         aria-hidden="true"
       >
-        <path d="M800 0v600H120C420 560 470 300 800 0Z" className="fill-navy" />
+        <path d="M800 40v560H240C560 540 520 240 800 40Z" className="fill-navy" />
       </svg>
 
       {/* Detalle de puntos */}
