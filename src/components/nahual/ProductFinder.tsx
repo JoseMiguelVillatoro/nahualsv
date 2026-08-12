@@ -9,7 +9,7 @@ const needs = [
 ];
 
 export function ProductFinder() {
-  const [active, setActive] = useState(needs[0].id);
+  const [active, setActive] = useState<string>("regular");
   const selected = needs.find((n) => n.id === active)!;
   const product = products.find((p) => p.id === selected.product)!;
 
