@@ -1,24 +1,48 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Header } from "@/components/nahual/Header";
+import { Hero } from "@/components/nahual/Hero";
+import { FeaturedProducts } from "@/components/nahual/FeaturedProducts";
+import { WhyNahual } from "@/components/nahual/WhyNahual";
+import { ProductFinder } from "@/components/nahual/ProductFinder";
+import { BrandSection } from "@/components/nahual/BrandSection";
+import { FinalCTA } from "@/components/nahual/FinalCTA";
+import { Footer } from "@/components/nahual/Footer";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Nahual Auto | Cuidado profesional para tu vehículo" },
+      {
+        name: "description",
+        content:
+          "Productos salvadoreños de limpieza y detailing automotriz: shampoo con cera, sin cera, limpiador y silicón para interiores.",
+      },
+      { property: "og:title", content: "Nahual Auto | Cuidado profesional para tu vehículo" },
+      {
+        property: "og:description",
+        content:
+          "Productos Nahual Auto diseñados para limpiar, proteger y mantener tu vehículo como nuevo.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main>
+        <Hero />
+        <FeaturedProducts />
+        <WhyNahual />
+        <ProductFinder />
+        <BrandSection />
+        <FinalCTA />
+      </main>
+      <Footer />
     </div>
   );
 }
