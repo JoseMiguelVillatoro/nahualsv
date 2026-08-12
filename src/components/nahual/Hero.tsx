@@ -4,7 +4,7 @@ import { Button } from "./Button";
 export function Hero() {
   return (
     <section id="inicio" className="relative overflow-hidden bg-secondary pt-28 lg:pt-32">
-      <div className="pointer-events-none absolute -right-24 top-0 hidden h-[130%] w-[55%] rounded-l-[16rem] bg-navy lg:block" />
+      <div className="pointer-events-none absolute -right-24 top-24 hidden h-[120%] w-[52%] rounded-l-[16rem] bg-navy lg:block" />
       <div className="nahual-pattern relative mx-auto grid max-w-7xl items-center gap-10 px-5 pb-16 lg:grid-cols-2 lg:gap-6 lg:px-8 lg:pb-24">
         <div className="max-w-xl">
           <p className="eyebrow">Nahual Auto</p>
