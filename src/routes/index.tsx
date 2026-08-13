@@ -44,8 +44,11 @@ function Index() {
         <ProductFinder />
         <BrandSection />
         <FinalCTA />
+        <ContactSection />
       </main>
       <Footer />
+      <Toaster />
     </div>
   );
 }
+
