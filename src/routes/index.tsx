@@ -6,7 +6,10 @@ import { WhyNahual } from "@/components/nahual/WhyNahual";
 import { ProductFinder } from "@/components/nahual/ProductFinder";
 import { BrandSection } from "@/components/nahual/BrandSection";
 import { FinalCTA } from "@/components/nahual/FinalCTA";
+import { ContactSection } from "@/components/nahual/ContactSection";
 import { Footer } from "@/components/nahual/Footer";
+import { Toaster } from "@/components/ui/sonner";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -41,8 +44,11 @@ function Index() {
         <ProductFinder />
         <BrandSection />
         <FinalCTA />
+        <ContactSection />
       </main>
       <Footer />
+      <Toaster />
     </div>
   );
 }
+
