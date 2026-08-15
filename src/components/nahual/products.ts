@@ -4,6 +4,13 @@ import p2 from "@/assets/p2.png.asset.json";
 import p3 from "@/assets/p3.png.asset.json";
 import p4 from "@/assets/p4.png.asset.json";
 
+/** Área del vehículo que atiende el producto */
+export type Area = "exterior" | "interior" | "ambos";
+/** Necesidad principal */
+export type Need = "limpieza" | "brillo" | "proteccion" | "mantenimiento";
+/** Resultado buscado */
+export type Result = "limpieza-profunda" | "acabado-premium" | "proteccion" | "mantenimiento-diario";
+
 export type Product = {
   id: string;
   /** URL slug: /producto/:slug */
@@ -11,13 +18,17 @@ export type Product = {
   name: string;
   category: string;
   tagline: string;
-  /** Descripción larga. PLACEHOLDER cuando no esté confirmada. */
   description: string;
+  /** Beneficio principal (una línea, para el Asesor Nahual) */
+  benefit: string;
   features: string[];
-  /** PLACEHOLDER: precio pendiente de confirmar. Editar aquí. */
+  /** Precio de referencia en USD. Editar aquí — fuente única de verdad. */
   price: number;
-  /** PLACEHOLDER: presentación pendiente de confirmar. */
   size: string;
+  /** Disponibilidad en catálogo */
+  available: boolean;
+  /** Atributos para catálogo, filtros y recomendación */
+  attributes: { areas: Area[]; needs: Need[]; results: Result[] };
   /** Primera imagen = imagen principal */
   images: string[];
   image: string;
@@ -35,6 +46,7 @@ export const products: Product[] = [
     tagline: "Limpieza + brillo en un solo producto.",
     description:
       "Limpieza + brillo en un solo producto. Fórmula de pH neutro, ideal para suciedad media.",
+    benefit: "Limpia y deja acabado brillante en un solo paso.",
     features: [
       "pH neutro",
       "Suciedad media",
@@ -42,8 +54,14 @@ export const products: Product[] = [
       "Uso en carrocería y rines",
       "Rinde hasta 30 lavadas",
     ],
-    price: 0,
+    price: 12.5,
     size: "PLACEHOLDER: presentación",
+    available: true,
+    attributes: {
+      areas: ["exterior"],
+      needs: ["brillo", "limpieza", "proteccion"],
+      results: ["acabado-premium", "proteccion"],
+    },
     images: [p1.url, hero.url],
     image: p1.url,
   },
@@ -55,6 +73,7 @@ export const products: Product[] = [
     tagline: "Limpieza profunda para remover suciedad más intensa.",
     description:
       "Limpieza profunda para remover suciedad más intensa. Fórmula de pH neutro para uso frecuente.",
+    benefit: "Remueve suciedad intensa sin dañar la pintura.",
     features: [
       "pH neutro",
       "Suciedad fuerte",
@@ -62,8 +81,14 @@ export const products: Product[] = [
       "Uso en carrocería y rines",
       "Rinde hasta 30 lavadas",
     ],
-    price: 0,
+    price: 10.5,
     size: "PLACEHOLDER: presentación",
+    available: true,
+    attributes: {
+      areas: ["exterior"],
+      needs: ["limpieza", "mantenimiento"],
+      results: ["limpieza-profunda", "mantenimiento-diario"],
+    },
     images: [p2.url, hero.url],
     image: p2.url,
   },
@@ -74,9 +99,16 @@ export const products: Product[] = [
     category: "Producto de limpieza",
     tagline: "Producto especializado para el cuidado de tu vehículo.",
     description: PLACEHOLDER_DESC,
+    benefit: "Multiusos para limpiar interior y exterior a diario.",
     features: [],
-    price: 0,
+    price: 7.5,
     size: "PLACEHOLDER: presentación",
+    available: true,
+    attributes: {
+      areas: ["ambos", "interior", "exterior"],
+      needs: ["limpieza", "mantenimiento"],
+      results: ["limpieza-profunda", "mantenimiento-diario"],
+    },
     images: [p3.url, hero.url],
     image: p3.url,
   },
@@ -87,9 +119,16 @@ export const products: Product[] = [
     category: "Cuidado interior",
     tagline: "Protege y revitaliza las superficies interiores de tu vehículo.",
     description: PLACEHOLDER_DESC,
+    benefit: "Protege y revitaliza plásticos y tableros.",
     features: [],
-    price: 0,
+    price: 9.75,
     size: "PLACEHOLDER: presentación",
+    available: true,
+    attributes: {
+      areas: ["interior"],
+      needs: ["proteccion", "brillo", "mantenimiento"],
+      results: ["proteccion", "acabado-premium", "mantenimiento-diario"],
+    },
     images: [p4.url, hero.url],
     image: p4.url,
   },
@@ -101,4 +140,20 @@ export function getProductBySlug(slug: string) {
 
 export function formatPrice(price: number) {
   return price > 0 ? `$${price.toFixed(2)}` : "Precio a confirmar";
+}
+
+/** Recomendación simple basada en los atributos del catálogo. */
+export function recommendProduct(area: Area, need: Need, result: Result) {
+  const scored = products
+    .filter((p) => p.available)
+    .map((p) => {
+      let score = 0;
+      if (p.attributes.areas.includes(area) || area === "ambos" || p.attributes.areas.includes("ambos"))
+        score += p.attributes.areas.includes(area) ? 3 : 1;
+      if (p.attributes.needs.includes(need)) score += 3;
+      if (p.attributes.results.includes(result)) score += 3;
+      return { p, score };
+    })
+    .sort((a, b) => b.score - a.score);
+  return scored[0]!.p;
 }
