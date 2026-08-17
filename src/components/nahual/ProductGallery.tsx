@@ -21,6 +21,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
               src={src}
               alt=""
               loading="lazy"
+              decoding="async"
               className="h-16 w-16 object-contain sm:h-20 sm:w-20"
             />
           </button>
@@ -31,6 +32,8 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
         <img
           src={images[active]}
           alt={alt}
+          decoding="async"
+          fetchPriority="high"
           width={900}
           height={1100}
           className="mx-auto h-[320px] w-full object-contain transition-transform duration-500 ease-out hover:scale-105 sm:h-[440px]"

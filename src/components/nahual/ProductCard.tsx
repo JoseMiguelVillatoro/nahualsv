@@ -12,6 +12,7 @@ export function ProductCard({ product: p, className = "" }: { product: Product; 
           src={p.image}
           alt={p.name}
           loading="lazy"
+          decoding="async"
           width={700}
           height={900}
           className="h-40 w-24 object-contain transition-transform duration-500 ease-out group-hover:scale-110"

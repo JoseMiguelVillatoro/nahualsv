@@ -74,7 +74,7 @@ export function CartDrawer() {
                     onClick={close}
                     className="shrink-0 overflow-hidden rounded-xl bg-secondary/70 p-2 transition-transform duration-300 hover:scale-105"
                   >
-                    <img src={item.image} alt={item.name} className="h-20 w-16 object-contain" />
+                    <img src={item.image} alt={item.name} loading="lazy" decoding="async" className="h-20 w-16 object-contain" />
                   </Link>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-3">

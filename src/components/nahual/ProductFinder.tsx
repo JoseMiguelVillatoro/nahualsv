@@ -145,6 +145,7 @@ export function ProductFinder() {
                       src={product.image}
                       alt={product.name}
                       loading="lazy"
+                      decoding="async"
                       className="h-44 w-auto object-contain transition-transform duration-500 hover:scale-105"
                     />
                   </div>
