@@ -1,8 +1,8 @@
-import hero from "@/assets/hero.png.asset.json";
-import p1 from "@/assets/p1.png.asset.json";
-import p2 from "@/assets/p2.png.asset.json";
-import p3 from "@/assets/p3.png.asset.json";
-import p4 from "@/assets/p4.png.asset.json";
+import hero from "@/assets/hero.webp.asset.json";
+import p1 from "@/assets/p1.webp.asset.json";
+import p2 from "@/assets/p2.webp.asset.json";
+import p3 from "@/assets/p3.webp.asset.json";
+import p4 from "@/assets/p4.webp.asset.json";
 
 /** Área del vehículo que atiende el producto */
 export type Area = "exterior" | "interior" | "ambos";
