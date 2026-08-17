@@ -39,12 +39,12 @@ function Index() {
       <Header />
       <main>
         <Hero />
-        <FeaturedProducts />
-        <WhyNahual />
+        <Reveal as="section"><FeaturedProducts /></Reveal>
+        <Reveal as="section"><WhyNahual /></Reveal>
         <ProductFinder />
-        <BrandSection />
-        <FinalCTA />
-        <ContactSection />
+        <Reveal as="section"><BrandSection /></Reveal>
+        <Reveal as="section"><FinalCTA /></Reveal>
+        <Reveal as="section"><ContactSection /></Reveal>
       </main>
       <Footer />
       <Toaster />
