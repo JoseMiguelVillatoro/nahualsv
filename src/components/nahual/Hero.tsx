@@ -1,4 +1,4 @@
-import heroAsset from "@/assets/hero.png.asset.json";
+import heroAsset from "@/assets/hero.webp.asset.json";
 import { Button } from "./Button";
 
 export function Hero() {
@@ -66,6 +66,9 @@ export function Hero() {
           <img
             src={heroAsset.url}
             alt="Botellas de shampoo automotriz Nahual Auto"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             width={1200}
             height={1200}
             className="w-full max-w-xl drop-shadow-2xl transition-transform duration-700 ease-out hover:-translate-y-2"

@@ -236,7 +236,7 @@ function CheckoutPage() {
                       {orderItems.map((item) => (
                         <li key={item.id} className="flex gap-3">
                           <div className="shrink-0 rounded-xl bg-secondary/70 p-2">
-                            <img src={item.image} alt={item.name} className="h-14 w-11 object-contain" />
+                            <img src={item.image} alt={item.name} loading="lazy" decoding="async" className="h-14 w-11 object-contain" />
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm font-semibold text-foreground">{item.name}</p>
