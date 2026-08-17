@@ -9,6 +9,7 @@ import { FinalCTA } from "@/components/nahual/FinalCTA";
 import { ContactSection } from "@/components/nahual/ContactSection";
 import { Footer } from "@/components/nahual/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { Reveal } from "@/components/nahual/Reveal";
 
 
 export const Route = createFileRoute("/")({
