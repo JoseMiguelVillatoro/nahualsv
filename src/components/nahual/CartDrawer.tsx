@@ -11,11 +11,14 @@ export function CartButton() {
       type="button"
       onClick={open}
       aria-label={`Abrir carrito (${count} artículos)`}
-      className="relative flex h-10 w-10 items-center justify-center rounded-lg text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/60"
+      className="relative flex h-10 w-10 items-center justify-center rounded-lg text-foreground outline-none transition-all duration-300 hover:scale-105 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/60"
     >
       <ShoppingCart size={22} />
       {count > 0 && (
-        <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[0.65rem] font-bold text-primary-foreground">
+        <span
+          key={count}
+          className="animate-pop absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[0.65rem] font-bold text-primary-foreground"
+        >
           {count}
         </span>
       )}
@@ -31,14 +34,14 @@ export function CartDrawer() {
   return (
     <div className="fixed inset-0 z-[60]">
       <div
-        className="absolute inset-0 bg-navy-deep/60 backdrop-blur-sm"
+        className="animate-overlay absolute inset-0 bg-navy-deep/60 backdrop-blur-sm"
         onClick={close}
         aria-hidden
       />
       <aside
         role="dialog"
         aria-label="Carrito de compras"
-        className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-background shadow-2xl"
+        className="animate-drawer absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-background shadow-2xl"
       >
         <header className="flex items-center justify-between border-b border-border px-6 py-5">
           <h2 className="text-lg font-semibold text-foreground">Tu carrito ({count})</h2>
@@ -59,13 +62,17 @@ export function CartDrawer() {
             </div>
           ) : (
             <ul className="space-y-5">
-              {items.map((item) => (
-                <li key={item.id} className="flex gap-4">
+              {items.map((item, i) => (
+                <li
+                  key={item.id}
+                  style={{ animationDelay: `${i * 40}ms` }}
+                  className="animate-rise flex gap-4"
+                >
                   <Link
                     to="/producto/$slug"
                     params={{ slug: item.slug }}
                     onClick={close}
-                    className="shrink-0 overflow-hidden rounded-xl bg-secondary/70 p-2"
+                    className="shrink-0 overflow-hidden rounded-xl bg-secondary/70 p-2 transition-transform duration-300 hover:scale-105"
                   >
                     <img src={item.image} alt={item.name} className="h-20 w-16 object-contain" />
                   </Link>
@@ -73,7 +80,9 @@ export function CartDrawer() {
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold text-foreground">{item.name}</p>
-                        <p className="mt-0.5 truncate text-xs text-muted-foreground">{item.size}</p>
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                          {formatPrice(item.price)} c/u
+                        </p>
                       </div>
                       <button
                         onClick={() => removeItem(item.id)}
@@ -107,9 +116,18 @@ export function CartDrawer() {
             <span className="text-lg font-semibold text-foreground">{formatPrice(subtotal)}</span>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
-            Envío y pagos se habilitarán más adelante (prototipo).
+            El envío se calcula en el checkout.
           </p>
           <div className="mt-5 space-y-3">
+            {items.length > 0 && (
+              <Link
+                to="/checkout"
+                onClick={close}
+                className="block w-full rounded-xl bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark active:scale-[0.99]"
+              >
+                Ir al checkout
+              </Link>
+            )}
             <button
               onClick={close}
               className="w-full rounded-xl border border-primary/70 px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
