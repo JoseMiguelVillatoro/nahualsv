@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2, Mail, MapPin, Phone, Send } from "lucide-react";
+import { Loader2, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Button } from "./Button";
@@ -18,10 +18,15 @@ const contactSchema = z.object({
   phone: z
     .string()
     .trim()
+    .nonempty({ message: "Ingresa tu teléfono" })
     .max(20, { message: "Máximo 20 caracteres" })
-    .regex(/^[0-9+()\-\s]*$/, { message: "Solo números y signos +, -, ( )" })
-    .optional()
-    .or(z.literal("")),
+    .regex(/^[0-9+()\-\s]*$/, { message: "Solo números y signos +, -, ( )" }),
+  subject: z
+    .string()
+    .trim()
+    .nonempty({ message: "Ingresa un asunto" })
+    .max(150, { message: "Máximo 150 caracteres" }),
+  channel: z.enum(["email", "phone", "whatsapp"]),
   message: z
     .string()
     .trim()
@@ -31,10 +36,25 @@ const contactSchema = z.object({
 
 type Field = keyof z.infer<typeof contactSchema>;
 
-const initial = { name: "", email: "", phone: "", message: "" };
+const initial = {
+  name: "",
+  email: "",
+  phone: "",
+  subject: "",
+  channel: "email" as "email" | "phone" | "whatsapp",
+  message: "",
+};
 
 const inputClass =
-  "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-all duration-200 placeholder:text-muted-foreground/70 focus:border-primary focus:ring-2 focus:ring-ring/30";
+  "w-full rounded-xl border border-border bg-secondary/60 px-4 py-3 text-sm text-foreground outline-none transition-all duration-200 placeholder:text-muted-foreground/70 focus:border-primary focus:bg-background focus:ring-2 focus:ring-ring/25";
+
+const labelClass = "mb-2 block text-xs font-semibold text-foreground";
+
+const channels = [
+  { id: "email" as const, Icon: Mail, label: "Correo electrónico" },
+  { id: "phone" as const, Icon: Phone, label: "Llamada telefónica" },
+  { id: "whatsapp" as const, Icon: MessageCircle, label: "WhatsApp" },
+];
 
 const contactInfo = [
   { Icon: Phone, label: "+503 0000 0000" },
@@ -67,7 +87,7 @@ export function ContactSection() {
     }
 
     setSending(true);
-    // Demo sin backend: simula el envío para validar la experiencia.
+    // Demo sin backend: la conexión con Resend se hará más adelante.
     await new Promise((r) => setTimeout(r, 900));
     setSending(false);
     setValues(initial);
@@ -86,7 +106,7 @@ export function ContactSection() {
           opacity: 0.4,
         }}
       />
-      <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+      <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1.25fr] lg:gap-16">
         <div>
           <p className="eyebrow">Contacto</p>
           <h2 className="mt-3 text-3xl font-bold leading-tight text-navy-foreground sm:text-4xl">
@@ -116,10 +136,12 @@ export function ContactSection() {
           noValidate
           className="rounded-3xl border border-navy-foreground/10 bg-background p-6 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)] sm:p-8"
         >
-          <div className="grid gap-5 sm:grid-cols-2">
+          <h3 className="text-xl font-bold text-foreground sm:text-2xl">Envíanos un Mensaje</h3>
+
+          <div className="mt-6 grid gap-5 sm:grid-cols-2">
             <div>
-              <label htmlFor="name" className="mb-2 block text-xs font-semibold text-foreground">
-                Nombre
+              <label htmlFor="name" className={labelClass}>
+                Nombre completo <span className="text-primary">*</span>
               </label>
               <input
                 id="name"
@@ -132,40 +154,80 @@ export function ContactSection() {
               {errors.name && <p className="mt-1.5 text-xs text-destructive">{errors.name}</p>}
             </div>
             <div>
-              <label htmlFor="phone" className="mb-2 block text-xs font-semibold text-foreground">
-                Teléfono (opcional)
+              <label htmlFor="email" className={labelClass}>
+                Correo electrónico <span className="text-primary">*</span>
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={values.email}
+                maxLength={255}
+                onChange={(e) => setField("email", e.target.value)}
+                placeholder="tu@email.com"
+                className={inputClass}
+              />
+              {errors.email && <p className="mt-1.5 text-xs text-destructive">{errors.email}</p>}
+            </div>
+            <div>
+              <label htmlFor="phone" className={labelClass}>
+                Teléfono <span className="text-primary">*</span>
               </label>
               <input
                 id="phone"
                 value={values.phone}
                 maxLength={20}
                 onChange={(e) => setField("phone", e.target.value)}
-                placeholder="+503 0000 0000"
+                placeholder="+503 0000-0000"
                 className={inputClass}
               />
               {errors.phone && <p className="mt-1.5 text-xs text-destructive">{errors.phone}</p>}
             </div>
+            <div>
+              <label htmlFor="subject" className={labelClass}>
+                Asunto <span className="text-primary">*</span>
+              </label>
+              <input
+                id="subject"
+                value={values.subject}
+                maxLength={150}
+                onChange={(e) => setField("subject", e.target.value)}
+                placeholder="¿En qué podemos ayudarte?"
+                className={inputClass}
+              />
+              {errors.subject && <p className="mt-1.5 text-xs text-destructive">{errors.subject}</p>}
+            </div>
           </div>
 
           <div className="mt-5">
-            <label htmlFor="email" className="mb-2 block text-xs font-semibold text-foreground">
-              Correo electrónico
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={values.email}
-              maxLength={255}
-              onChange={(e) => setField("email", e.target.value)}
-              placeholder="tucorreo@ejemplo.com"
-              className={inputClass}
-            />
-            {errors.email && <p className="mt-1.5 text-xs text-destructive">{errors.email}</p>}
+            <p className={labelClass}>
+              ¿Cómo prefieres ser contactado? <span className="text-primary">*</span>
+            </p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {channels.map(({ id, Icon, label }) => {
+                const active = values.channel === id;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setField("channel", id)}
+                    aria-pressed={active}
+                    className={`flex flex-col items-center gap-2 rounded-xl border px-3 py-4 text-xs font-medium transition-all duration-200 ${
+                      active
+                        ? "border-primary bg-primary/10 text-primary shadow-[0_10px_24px_-16px_color-mix(in_oklab,var(--primary)_80%,transparent)]"
+                        : "border-border bg-secondary/60 text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                    }`}
+                  >
+                    <Icon size={18} />
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="mt-5">
-            <label htmlFor="message" className="mb-2 block text-xs font-semibold text-foreground">
-              Mensaje
+            <label htmlFor="message" className={labelClass}>
+              Mensaje <span className="text-primary">*</span>
             </label>
             <textarea
               id="message"
@@ -173,7 +235,7 @@ export function ContactSection() {
               value={values.message}
               maxLength={1000}
               onChange={(e) => setField("message", e.target.value)}
-              placeholder="Cuéntanos en qué podemos ayudarte"
+              placeholder="Describe tu consulta o solicitud de cotización..."
               className={`${inputClass} resize-none`}
             />
             <div className="mt-1.5 flex items-center justify-between">
@@ -182,7 +244,7 @@ export function ContactSection() {
             </div>
           </div>
 
-          <Button type="submit" disabled={sending} className="mt-6 w-full sm:w-auto">
+          <Button type="submit" disabled={sending} className="mt-6 w-full">
             {sending ? (
               <>
                 <Loader2 size={16} className="animate-spin" />
@@ -190,13 +252,13 @@ export function ContactSection() {
               </>
             ) : (
               <>
-                Enviar mensaje
                 <Send size={16} />
+                Enviar Mensaje
               </>
             )}
           </Button>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Demo de prototipo: el envío se simula localmente, aún sin servidor de correo.
+          <p className="mt-3 text-center text-xs text-muted-foreground">
+            Demo de prototipo: el envío se conectará con Resend más adelante.
           </p>
         </form>
       </div>
