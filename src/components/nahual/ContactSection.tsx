@@ -258,7 +258,7 @@ export function ContactSection() {
             )}
           </Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">
-            Demo de prototipo: el envío se conectará con Resend más adelante.
+            {"\n"}
           </p>
         </form>
       </div>
