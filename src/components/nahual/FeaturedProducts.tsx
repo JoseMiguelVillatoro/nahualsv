@@ -8,6 +8,7 @@ export function FeaturedProducts() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const [paused, setPaused] = useState(false);
 
   const update = useCallback(() => {
     const el = trackRef.current;
@@ -27,6 +28,25 @@ export function FeaturedProducts() {
     if (!el) return;
     el.scrollBy({ left: dir * Math.max(320, el.clientWidth * 0.9), behavior: "smooth" });
   };
+
+  // Autoplay: avanza solo y vuelve al inicio al llegar al final.
+  useEffect(() => {
+    if (paused) return;
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    const id = window.setInterval(() => {
+      const el = trackRef.current;
+      if (!el) return;
+      const end = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
+      if (end) el.scrollTo({ left: 0, behavior: "smooth" });
+      else el.scrollBy({ left: Math.max(320, el.clientWidth * 0.9), behavior: "smooth" });
+    }, 3500);
+    return () => window.clearInterval(id);
+  }, [paused]);
+
 
   return (
     <section id="productos" className="bg-background py-20 lg:py-24">
@@ -60,8 +80,14 @@ export function FeaturedProducts() {
         <div
           ref={trackRef}
           onScroll={update}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocusCapture={() => setPaused(true)}
+          onBlurCapture={() => setPaused(false)}
+          onTouchStart={() => setPaused(true)}
           className="mt-10 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
+
           {products.map((p) => (
             <ProductCard
               key={p.id}
