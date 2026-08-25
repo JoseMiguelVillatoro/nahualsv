@@ -1,8 +1,8 @@
-import hero from "@/assets/hero.webp.asset.json";
-import p1 from "@/assets/p1.webp.asset.json";
-import p2 from "@/assets/p2.webp.asset.json";
-import p3 from "@/assets/p3.webp.asset.json";
-import p4 from "@/assets/p4.webp.asset.json";
+import hero from "@/assets/hero.webp";
+import p1 from "@/assets/p1.webp";
+import p2 from "@/assets/p2.webp";
+import p3 from "@/assets/p3.webp";
+import p4 from "@/assets/p4.webp";
 
 /** Área del vehículo que atiende el producto */
 export type Area = "exterior" | "interior" | "ambos";
@@ -62,8 +62,8 @@ export const products: Product[] = [
       needs: ["brillo", "limpieza", "proteccion"],
       results: ["acabado-premium", "proteccion"],
     },
-    images: [p1.url, hero.url],
-    image: p1.url,
+    images: [p1, hero],
+    image: p1,
   },
   {
     id: "shampoo-sin-cera",
@@ -89,8 +89,8 @@ export const products: Product[] = [
       needs: ["limpieza", "mantenimiento"],
       results: ["limpieza-profunda", "mantenimiento-diario"],
     },
-    images: [p2.url, hero.url],
-    image: p2.url,
+    images: [p2, hero],
+    image: p2,
   },
   {
     id: "el-limpiador",
@@ -109,8 +109,8 @@ export const products: Product[] = [
       needs: ["limpieza", "mantenimiento"],
       results: ["limpieza-profunda", "mantenimiento-diario"],
     },
-    images: [p3.url, hero.url],
-    image: p3.url,
+    images: [p3, hero],
+    image: p3,
   },
   {
     id: "silicon-interiores",
@@ -129,8 +129,8 @@ export const products: Product[] = [
       needs: ["proteccion", "brillo", "mantenimiento"],
       results: ["proteccion", "acabado-premium", "mantenimiento-diario"],
     },
-    images: [p4.url, hero.url],
-    image: p4.url,
+    images: [p4, hero],
+    image: p4,
   },
 ];
 
