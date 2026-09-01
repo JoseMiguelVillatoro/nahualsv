@@ -306,10 +306,12 @@ function CheckoutPage() {
 
                     <button
                       type="submit"
-                      className="mt-6 w-full rounded-xl bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark active:scale-[0.99]"
+                      disabled={sending}
+                      className="mt-6 w-full rounded-xl bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      Confirmar pedido
+                      {sending ? "Enviando pedido…" : "Confirmar pedido"}
                     </button>
+
                     <p className="mt-3 text-center text-xs text-muted-foreground">
                       Pagos en línea próximamente. Confirmamos tu pedido por WhatsApp.
                     </p>
