@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Check, CreditCard, Landmark, ShoppingCart, Truck, Store } from "lucide-react";
 import { Header } from "@/components/nahual/Header";
 import { Footer } from "@/components/nahual/Footer";
 import { formatPrice } from "@/components/nahual/products";
+import { sendOrderEmail } from "@/lib/orders.functions";
 import { useCart } from "@/lib/cart";
+
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -67,22 +70,55 @@ function Field({
 
 function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
+  const sendOrder = useServerFn(sendOrderEmail);
   const [delivery, setDelivery] = useState<Delivery>("domicilio");
   const [payment, setPayment] = useState<Payment>("transferencia");
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+  const [mailError, setMailError] = useState<string | null>(null);
 
   const shipping = delivery === "domicilio" && items.length > 0 ? DELIVERY_FEE : 0;
   const total = subtotal + shipping;
   const orderItems = useMemo(() => items, [items]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (items.length === 0) return;
+    if (items.length === 0 || sending) return;
+    const fd = new FormData(e.currentTarget);
+    const str = (k: string) => String(fd.get(k) ?? "").trim();
     const id = `NA-${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 90 + 10)}`;
+
+    setSending(true);
+    setMailError(null);
+    try {
+      const res = await sendOrder({
+        data: {
+          orderId: id,
+          nombre: str("nombre"),
+          email: str("email"),
+          telefono: str("telefono"),
+          entrega: delivery,
+          departamento: str("departamento"),
+          municipio: str("municipio"),
+          direccion: str("direccion"),
+          referencia: str("referencia"),
+          pago: payment,
+          items: items.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
+          subtotal,
+          envio: shipping,
+          total,
+        },
+      });
+      if (!res.sent) setMailError(res.error ?? "No se pudo enviar el correo");
+    } catch {
+      setMailError("No se pudo enviar el correo al equipo de ventas");
+    }
+    setSending(false);
     setOrderId(id);
     clear();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -101,6 +137,13 @@ function CheckoutPage() {
               </p>
               <p className="mt-6 text-sm text-muted-foreground">Número de pedido</p>
               <p className="text-2xl font-semibold tracking-wide text-primary">{orderId}</p>
+              {mailError && (
+                <p className="mt-4 rounded-xl bg-destructive/10 px-4 py-3 text-xs text-destructive">
+                  No pudimos enviar el correo al equipo de ventas. Escríbenos por WhatsApp con tu
+                  número de pedido.
+                </p>
+              )}
+
               <Link
                 to="/"
                 hash="productos"
@@ -270,10 +313,12 @@ function CheckoutPage() {
 
                     <button
                       type="submit"
-                      className="mt-6 w-full rounded-xl bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark active:scale-[0.99]"
+                      disabled={sending}
+                      className="mt-6 w-full rounded-xl bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      Confirmar pedido
+                      {sending ? "Enviando pedido…" : "Confirmar pedido"}
                     </button>
+
                     <p className="mt-3 text-center text-xs text-muted-foreground">
                       Pagos en línea próximamente. Confirmamos tu pedido por WhatsApp.
                     </p>
