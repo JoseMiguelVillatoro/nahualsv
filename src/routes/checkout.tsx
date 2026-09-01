@@ -137,6 +137,13 @@ function CheckoutPage() {
               </p>
               <p className="mt-6 text-sm text-muted-foreground">Número de pedido</p>
               <p className="text-2xl font-semibold tracking-wide text-primary">{orderId}</p>
+              {mailError && (
+                <p className="mt-4 rounded-xl bg-destructive/10 px-4 py-3 text-xs text-destructive">
+                  No pudimos enviar el correo al equipo de ventas. Escríbenos por WhatsApp con tu
+                  número de pedido.
+                </p>
+              )}
+
               <Link
                 to="/"
                 hash="productos"
