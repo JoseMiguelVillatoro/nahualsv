@@ -1,4 +1,4 @@
-import heroAsset from "@/assets/hero.webp";
+import heroAsset from "@/assets/hero.webp.asset.json";
 import { Button } from "./Button";
 
 export function Hero() {
@@ -64,7 +64,7 @@ export function Hero() {
 
         <div className="relative flex items-end justify-center lg:justify-end">
           <img
-            src={heroAsset}
+            src={heroAsset.url}
             alt="Botellas de shampoo automotriz Nahual Auto"
             loading="eager"
             fetchPriority="high"

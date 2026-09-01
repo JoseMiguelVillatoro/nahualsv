@@ -1,8 +1,14 @@
-import hero from "@/assets/hero.webp";
-import p1 from "@/assets/p1.webp";
-import p2 from "@/assets/p2.webp";
-import p3 from "@/assets/p3.webp";
-import p4 from "@/assets/p4.webp";
+import heroAsset from "@/assets/hero.webp.asset.json";
+import p1Asset from "@/assets/p1.webp.asset.json";
+import p2Asset from "@/assets/p2.webp.asset.json";
+import p3Asset from "@/assets/p3.webp.asset.json";
+import p4Asset from "@/assets/p4.webp.asset.json";
+
+const hero = heroAsset.url;
+const p1 = p1Asset.url;
+const p2 = p2Asset.url;
+const p3 = p3Asset.url;
+const p4 = p4Asset.url;
 
 /** Área del vehículo que atiende el producto */
 export type Area = "exterior" | "interior" | "ambos";
