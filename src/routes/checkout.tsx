@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Check, CreditCard, Landmark, ShoppingCart, Truck, Store } from "lucide-react";
 import { Header } from "@/components/nahual/Header";
 import { Footer } from "@/components/nahual/Footer";
 import { formatPrice } from "@/components/nahual/products";
+import { sendOrderEmail } from "@/lib/orders.functions";
 import { useCart } from "@/lib/cart";
+
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
