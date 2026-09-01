@@ -1,4 +1,4 @@
-import heroAsset from "@/assets/hero.webp";
+import heroAsset from "@/assets/hero.webp.asset.json";
 import { Button } from "./Button";
 
 export function Hero() {
