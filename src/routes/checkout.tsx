@@ -67,22 +67,55 @@ function Field({
 
 function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
+  const sendOrder = useServerFn(sendOrderEmail);
   const [delivery, setDelivery] = useState<Delivery>("domicilio");
   const [payment, setPayment] = useState<Payment>("transferencia");
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+  const [mailError, setMailError] = useState<string | null>(null);
 
   const shipping = delivery === "domicilio" && items.length > 0 ? DELIVERY_FEE : 0;
   const total = subtotal + shipping;
   const orderItems = useMemo(() => items, [items]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (items.length === 0) return;
+    if (items.length === 0 || sending) return;
+    const fd = new FormData(e.currentTarget);
+    const str = (k: string) => String(fd.get(k) ?? "").trim();
     const id = `NA-${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 90 + 10)}`;
+
+    setSending(true);
+    setMailError(null);
+    try {
+      const res = await sendOrder({
+        data: {
+          orderId: id,
+          nombre: str("nombre"),
+          email: str("email"),
+          telefono: str("telefono"),
+          entrega: delivery,
+          departamento: str("departamento"),
+          municipio: str("municipio"),
+          direccion: str("direccion"),
+          referencia: str("referencia"),
+          pago: payment,
+          items: items.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
+          subtotal,
+          envio: shipping,
+          total,
+        },
+      });
+      if (!res.sent) setMailError(res.error ?? "No se pudo enviar el correo");
+    } catch {
+      setMailError("No se pudo enviar el correo al equipo de ventas");
+    }
+    setSending(false);
     setOrderId(id);
     clear();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
 
   return (
     <div className="min-h-screen bg-background">
