@@ -42,7 +42,7 @@ export const sendOrderEmail = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const LOVABLE_API_KEY = process.env["LOVABLE_API_KEY"];
     const RESEND_API_KEY = process.env["RESEND_API_KEY"];
-    const SALES_EMAIL = process.env["SALES_EMAIL"] ?? "ventas@nahualauto.com";
+    const SALES_EMAIL = process.env["SALES_EMAIL"] ?? "mike.villatoro@hotmail.com";
     const FROM = process.env["ORDERS_FROM_EMAIL"] ?? "Nahual Auto <onboarding@resend.dev>";
 
     if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
