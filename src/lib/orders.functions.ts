@@ -24,7 +24,17 @@ const orderSchema = z.object({
   total: z.number().min(0),
 });
 
+const contactSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(255),
+  phone: z.string().trim().min(1).max(20),
+  subject: z.string().trim().min(1).max(150),
+  channel: z.enum(["email", "phone", "whatsapp"]),
+  message: z.string().trim().min(1).max(1000),
+});
+
 export type OrderPayload = z.input<typeof orderSchema>;
+export type ContactPayload = z.input<typeof contactSchema>;
 
 const money = (n: number) => `$${n.toFixed(2)}`;
 
