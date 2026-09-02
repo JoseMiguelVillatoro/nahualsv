@@ -62,46 +62,24 @@ export const sendOrderEmail = createServerFn({ method: "POST" })
       return { sent: false, error: "Email no configurado" as const };
     }
 
-    const entrega =
-      data.entrega === "domicilio"
-        ? `Envío a domicilio<br/>${esc(data.direccion)}<br/>${esc(data.municipio)}, ${esc(
-            data.departamento,
-          )}${data.referencia ? `<br/>Ref: ${esc(data.referencia)}` : ""}`
-        : "Recoge el pedido en tienda";
-
-    const rows = data.items
-      .map(
-        (i) =>
-          `<tr><td style="padding:8px 0;border-bottom:1px solid #eee">${esc(i.name)}</td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:center">${i.qty}</td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right">${money(
-            i.price * i.qty,
-          )}</td></tr>`,
-      )
-      .join("");
-
-    const html = `<div style="font-family:Arial,sans-serif;color:#1B1E27;max-width:640px">
-  <h2 style="color:#D2540F;margin:0 0 4px">Nuevo pedido ${esc(data.orderId)}</h2>
-  <p style="margin:0 0 20px;color:#666">Pedido recibido desde el sitio web de Nahual Auto.</p>
-  <h3 style="margin:20px 0 6px">Cliente</h3>
-  <p style="margin:0;line-height:1.6">
-    <strong>${esc(data.nombre)}</strong><br/>
-    Correo: ${esc(data.email)}<br/>
-    Teléfono / WhatsApp: ${esc(data.telefono)}
-  </p>
-  <h3 style="margin:20px 0 6px">Entrega</h3>
-  <p style="margin:0;line-height:1.6">${entrega}</p>
-  <h3 style="margin:20px 0 6px">Pago</h3>
-  <p style="margin:0">${esc(PAGO_LABEL[data.pago] ?? data.pago)}</p>
-  <h3 style="margin:20px 0 6px">Productos</h3>
-  <table style="width:100%;border-collapse:collapse;font-size:14px">
-    <thead><tr><th style="text-align:left;padding-bottom:6px">Producto</th><th style="padding-bottom:6px">Cant.</th><th style="text-align:right;padding-bottom:6px">Total</th></tr></thead>
-    <tbody>${rows}</tbody>
-  </table>
-  <p style="margin:16px 0 0;line-height:1.8">
-    Subtotal: ${money(data.subtotal)}<br/>
-    Envío: ${data.envio > 0 ? money(data.envio) : "Gratis"}<br/>
-    <strong style="font-size:16px">Total: ${money(data.total)}</strong>
-  </p>
-</div>`;
+    const html = await renderEmailTemplate(
+      OrderEmail({
+        orderId: data.orderId,
+        nombre: data.nombre,
+        email: data.email,
+        telefono: data.telefono,
+        entrega: data.entrega,
+        departamento: data.departamento,
+        municipio: data.municipio,
+        direccion: data.direccion,
+        referencia: data.referencia,
+        pago: data.pago,
+        items: data.items,
+        subtotal: data.subtotal,
+        envio: data.envio,
+        total: data.total,
+      }),
+    );
 
     const response = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
       method: "POST",
