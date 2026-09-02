@@ -124,22 +124,16 @@ export const sendContactEmail = createServerFn({ method: "POST" })
       return { sent: false, error: "Email no configurado" as const };
     }
 
-    const html = `<div style="font-family:Arial,sans-serif;color:#1B1E27;max-width:640px">
-  <h2 style="color:#D2540F;margin:0 0 4px">Nuevo mensaje de contacto</h2>
-  <p style="margin:0 0 20px;color:#666">Mensaje enviado desde el formulario de contacto de Nahual Auto.</p>
-  <h3 style="margin:20px 0 6px">Cliente</h3>
-  <p style="margin:0;line-height:1.6">
-    <strong>${esc(data.name)}</strong><br/>
-    Correo: ${esc(data.email)}<br/>
-    Teléfono: ${esc(data.phone)}
-  </p>
-  <h3 style="margin:20px 0 6px">Asunto</h3>
-  <p style="margin:0;line-height:1.6">${esc(data.subject)}</p>
-  <h3 style="margin:20px 0 6px">Preferencia de contacto</h3>
-  <p style="margin:0;line-height:1.6">${esc(CHANNEL_LABEL[data.channel] ?? data.channel)}</p>
-  <h3 style="margin:20px 0 6px">Mensaje</h3>
-  <p style="margin:0;line-height:1.6;white-space:pre-wrap">${esc(data.message)}</p>
-</div>`;
+    const html = await renderEmailTemplate(
+      ContactEmail({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        subject: data.subject,
+        channel: data.channel,
+        message: data.message,
+      }),
+    );
 
     const response = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
       method: "POST",
