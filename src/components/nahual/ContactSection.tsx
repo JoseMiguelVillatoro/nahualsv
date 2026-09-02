@@ -68,6 +68,7 @@ export function ContactSection() {
   const [values, setValues] = useState(initial);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [sending, setSending] = useState(false);
+  const sendMessage = useServerFn(sendContactEmail);
 
   const setField = (field: Field, value: string) => {
     setValues((v) => ({ ...v, [field]: value }));
@@ -89,13 +90,25 @@ export function ContactSection() {
     }
 
     setSending(true);
-    // Demo sin backend: la conexión con Resend se hará más adelante.
-    await new Promise((r) => setTimeout(r, 900));
-    setSending(false);
-    setValues(initial);
-    toast.success("¡Mensaje enviado! (demo)", {
-      description: `Gracias ${parsed.data.name}, te contactaremos pronto.`,
-    });
+    try {
+      const result = await sendMessage({ data: parsed.data });
+      if (result.sent) {
+        setValues(initial);
+        toast.success("¡Mensaje enviado!", {
+          description: `Gracias ${parsed.data.name}, te contactaremos pronto.`,
+        });
+      } else {
+        toast.error("No se pudo enviar el mensaje", {
+          description: result.error ?? "Intenta de nuevo más tarde.",
+        });
+      }
+    } catch (err) {
+      toast.error("Error al enviar", {
+        description: err instanceof Error ? err.message : "Intenta de nuevo más tarde.",
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
