@@ -24,7 +24,17 @@ const orderSchema = z.object({
   total: z.number().min(0),
 });
 
+const contactSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(255),
+  phone: z.string().trim().min(1).max(20),
+  subject: z.string().trim().min(1).max(150),
+  channel: z.enum(["email", "phone", "whatsapp"]),
+  message: z.string().trim().min(1).max(1000),
+});
+
 export type OrderPayload = z.input<typeof orderSchema>;
+export type ContactPayload = z.input<typeof contactSchema>;
 
 const money = (n: number) => `$${n.toFixed(2)}`;
 
@@ -102,6 +112,66 @@ export const sendOrderEmail = createServerFn({ method: "POST" })
         to: [SALES_EMAIL],
         reply_to: data.email,
         subject: `Nuevo pedido ${data.orderId} — ${data.nombre} (${money(data.total)})`,
+        html,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(`Resend request failed [${response.status}]: ${errorBody}`);
+      return { sent: false, error: `No se pudo enviar el correo (${response.status})` };
+    }
+
+    return { sent: true as const };
+  });
+
+const CHANNEL_LABEL: Record<string, string> = {
+  email: "Correo electrónico",
+  phone: "Llamada telefónica",
+  whatsapp: "WhatsApp",
+};
+
+export const sendContactEmail = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => contactSchema.parse(data))
+  .handler(async ({ data }) => {
+    const LOVABLE_API_KEY = process.env["LOVABLE_API_KEY"];
+    const RESEND_API_KEY = process.env["RESEND_API_KEY"];
+    const SALES_EMAIL = process.env["SALES_EMAIL"] ?? "mike.villatoro@hotmail.com";
+    const FROM = process.env["ORDERS_FROM_EMAIL"] ?? "Nahual Auto <onboarding@resend.dev>";
+
+    if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
+      return { sent: false, error: "Email no configurado" as const };
+    }
+
+    const html = `<div style="font-family:Arial,sans-serif;color:#1B1E27;max-width:640px">
+  <h2 style="color:#D2540F;margin:0 0 4px">Nuevo mensaje de contacto</h2>
+  <p style="margin:0 0 20px;color:#666">Mensaje enviado desde el formulario de contacto de Nahual Auto.</p>
+  <h3 style="margin:20px 0 6px">Cliente</h3>
+  <p style="margin:0;line-height:1.6">
+    <strong>${esc(data.name)}</strong><br/>
+    Correo: ${esc(data.email)}<br/>
+    Teléfono: ${esc(data.phone)}
+  </p>
+  <h3 style="margin:20px 0 6px">Asunto</h3>
+  <p style="margin:0;line-height:1.6">${esc(data.subject)}</p>
+  <h3 style="margin:20px 0 6px">Preferencia de contacto</h3>
+  <p style="margin:0;line-height:1.6">${esc(CHANNEL_LABEL[data.channel] ?? data.channel)}</p>
+  <h3 style="margin:20px 0 6px">Mensaje</h3>
+  <p style="margin:0;line-height:1.6;white-space:pre-wrap">${esc(data.message)}</p>
+</div>`;
+
+    const response = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "X-Connection-Api-Key": RESEND_API_KEY,
+      },
+      body: JSON.stringify({
+        from: FROM,
+        to: [SALES_EMAIL],
+        reply_to: data.email,
+        subject: `Contacto: ${data.subject} — ${data.name}`,
         html,
       }),
     });
