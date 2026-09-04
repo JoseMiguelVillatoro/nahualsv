@@ -61,7 +61,7 @@ export const products: Product[] = [
       "Rinde hasta 30 lavadas",
     ],
     price: 12.5,
-    size: "PLACEHOLDER: presentación",
+    size: DEFAULT_SIZE,
     available: true,
     attributes: {
       areas: ["exterior"],
@@ -88,7 +88,7 @@ export const products: Product[] = [
       "Rinde hasta 30 lavadas",
     ],
     price: 10.5,
-    size: "PLACEHOLDER: presentación",
+    size: DEFAULT_SIZE,
     available: true,
     attributes: {
       areas: ["exterior"],
@@ -104,11 +104,18 @@ export const products: Product[] = [
     name: "El Limpiador",
     category: "Producto de limpieza",
     tagline: "Producto especializado para el cuidado de tu vehículo.",
-    description: PLACEHOLDER_DESC,
+    description:
+      "Limpiador multiusos para interiores y exteriores. Remueve polvo, grasa y manchas del día a día sin dañar plásticos, vinil ni pintura.",
     benefit: "Multiusos para limpiar interior y exterior a diario.",
-    features: [],
+    features: [
+      "Fórmula multiusos",
+      "Seguro en plásticos y vinil",
+      "Remueve grasa y manchas",
+      "Uso interior y exterior",
+      "Rinde para uso frecuente",
+    ],
     price: 7.5,
-    size: "PLACEHOLDER: presentación",
+    size: DEFAULT_SIZE,
     available: true,
     attributes: {
       areas: ["ambos", "interior", "exterior"],
@@ -124,11 +131,18 @@ export const products: Product[] = [
     name: "Silicón para interiores",
     category: "Cuidado interior",
     tagline: "Protege y revitaliza las superficies interiores de tu vehículo.",
-    description: PLACEHOLDER_DESC,
+    description:
+      "Silicón acondicionador para tableros, paneles y plásticos interiores. Revitaliza el color y deja un acabado protector sin sensación grasosa.",
     benefit: "Protege y revitaliza plásticos y tableros.",
-    features: [],
+    features: [
+      "Acabado satinado no grasoso",
+      "Revitaliza el color",
+      "Protección contra resequedad",
+      "Ideal para tablero y paneles",
+      "Aroma agradable",
+    ],
     price: 9.75,
-    size: "PLACEHOLDER: presentación",
+    size: DEFAULT_SIZE,
     available: true,
     attributes: {
       areas: ["interior"],
