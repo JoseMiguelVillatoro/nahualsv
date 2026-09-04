@@ -108,8 +108,9 @@ export function ProductDetail({ product }: { product: Product }) {
             </div>
 
             <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-              <ShieldCheck size={16} className="text-primary" /> Prototipo: pagos aún no habilitados
+              <ShieldCheck size={16} className="text-primary" /> Coordinamos pago y entrega contigo
             </p>
+
 
             <Link
               to="/"
