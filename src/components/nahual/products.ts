@@ -40,8 +40,8 @@ export type Product = {
   image: string;
 };
 
-const PLACEHOLDER_DESC =
-  "PLACEHOLDER: descripción técnica pendiente de confirmar con Nahual Auto. Editar en src/components/nahual/products.ts.";
+const DEFAULT_SIZE = "500 ml";
+
 
 export const products: Product[] = [
   {
