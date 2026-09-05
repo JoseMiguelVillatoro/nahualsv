@@ -14,16 +14,220 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      contact_messages: {
+        Row: {
+          channel: string
+          created_at: string
+          email: string
+          email_sent: boolean
+          id: string
+          message: string
+          name: string
+          phone: string
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          channel: string
+          created_at?: string
+          email: string
+          email_sent?: boolean
+          id?: string
+          message: string
+          name: string
+          phone: string
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          email?: string
+          email_sent?: boolean
+          id?: string
+          message?: string
+          name?: string
+          phone?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          address: string
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          delivery_method: string
+          department: string
+          email_sent: boolean
+          id: string
+          items: Json
+          municipality: string
+          order_number: string
+          payment_method: string
+          reference: string
+          shipping: number
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          address?: string
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          delivery_method: string
+          department?: string
+          email_sent?: boolean
+          id?: string
+          items?: Json
+          municipality?: string
+          order_number: string
+          payment_method: string
+          reference?: string
+          shipping?: number
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          delivery_method?: string
+          department?: string
+          email_sent?: boolean
+          id?: string
+          items?: Json
+          municipality?: string
+          order_number?: string
+          payment_method?: string
+          reference?: string
+          shipping?: number
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          areas: string[]
+          available: boolean
+          benefit: string
+          category: string
+          created_at: string
+          description: string
+          featured: boolean
+          features: string[]
+          id: string
+          images: string[]
+          name: string
+          needs: string[]
+          price: number
+          results: string[]
+          size: string
+          slug: string
+          sort_order: number
+          tagline: string
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          areas?: string[]
+          available?: boolean
+          benefit?: string
+          category?: string
+          created_at?: string
+          description?: string
+          featured?: boolean
+          features?: string[]
+          id?: string
+          images?: string[]
+          name: string
+          needs?: string[]
+          price?: number
+          results?: string[]
+          size?: string
+          slug: string
+          sort_order?: number
+          tagline?: string
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          areas?: string[]
+          available?: boolean
+          benefit?: string
+          category?: string
+          created_at?: string
+          description?: string
+          featured?: boolean
+          features?: string[]
+          id?: string
+          images?: string[]
+          name?: string
+          needs?: string[]
+          price?: number
+          results?: string[]
+          size?: string
+          slug?: string
+          sort_order?: number
+          tagline?: string
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      claim_first_admin: { Args: never; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +354,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin"],
+    },
   },
 } as const

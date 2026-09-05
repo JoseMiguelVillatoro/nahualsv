@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { listProducts } from "@/lib/catalog.functions";
 import { Header } from "@/components/nahual/Header";
 import { Hero } from "@/components/nahual/Hero";
 import { FeaturedProducts } from "@/components/nahual/FeaturedProducts";
@@ -31,18 +32,21 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Index,
+  loader: () => listProducts(),
+  errorComponent: () => <Index products={[]} />,
+  notFoundComponent: () => <Index products={[]} />,
+  component: () => <Index products={Route.useLoaderData()} />,
 });
 
-function Index() {
+function Index({ products }: { products: import("@/components/nahual/products").Product[] }) {
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main>
         <Hero />
-        <Reveal as="section"><FeaturedProducts /></Reveal>
+        <Reveal as="section"><FeaturedProducts products={products} /></Reveal>
         <Reveal as="section"><WhyNahual /></Reveal>
-        <ProductFinder />
+        <ProductFinder products={products} />
         <Reveal as="section"><BrandSection /></Reveal>
         <Reveal as="section"><FinalCTA /></Reveal>
         <Reveal as="section"><ContactSection /></Reveal>

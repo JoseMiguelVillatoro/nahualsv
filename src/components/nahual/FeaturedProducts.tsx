@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { products } from "./products";
+import type { Product } from "./products";
 import { ProductCard } from "./ProductCard";
 
-const loop = [...products, ...products];
-
-export function FeaturedProducts() {
+export function FeaturedProducts({ products }: { products: Product[] }) {
+  const featured = products.filter((p) => p.featured);
+  const loop = [...featured, ...featured];
   const trackRef = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);
   const [hovered, setHovered] = useState<number | null>(null);

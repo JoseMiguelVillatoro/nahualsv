@@ -8,6 +8,7 @@ import {
   type Area,
   type Need,
   type Result,
+  type Product,
 } from "./products";
 import { Reveal } from "./Reveal";
 
@@ -45,7 +46,7 @@ const steps = [
 
 type Answers = { area?: Area; need?: Need; result?: Result };
 
-export function ProductFinder() {
+export function ProductFinder({ products }: { products: Product[] }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const { addItem, open } = useCart();
@@ -53,7 +54,7 @@ export function ProductFinder() {
   const done = step >= steps.length;
   const product =
     done && answers.area && answers.need && answers.result
-      ? recommendProduct(answers.area, answers.need, answers.result)
+      ? recommendProduct(products, answers.area, answers.need, answers.result)
       : null;
 
   const select = (key: keyof Answers, value: string) => {

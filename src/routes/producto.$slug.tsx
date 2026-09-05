@@ -2,11 +2,11 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Header } from "@/components/nahual/Header";
 import { Footer } from "@/components/nahual/Footer";
 import { ProductDetail } from "@/components/nahual/ProductDetail";
-import { getProductBySlug } from "@/components/nahual/products";
+import { getProductBySlug } from "@/lib/catalog.functions";
 
 export const Route = createFileRoute("/producto/$slug")({
-  loader: ({ params }) => {
-    const product = getProductBySlug(params.slug);
+  loader: async ({ params }) => {
+    const product = await getProductBySlug({ data: { slug: params.slug } });
     if (!product) throw notFound();
     return { product };
   },
