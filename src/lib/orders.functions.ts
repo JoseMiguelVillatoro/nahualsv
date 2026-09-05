@@ -58,6 +58,33 @@ export const sendOrderEmail = createServerFn({ method: "POST" })
     const SALES_EMAIL = process.env["SALES_EMAIL"] ?? "mike.villatoro@hotmail.com";
     const FROM = process.env["ORDERS_FROM_EMAIL"] ?? "Nahual Auto <onboarding@resend.dev>";
 
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: savedOrder, error: dbError } = await supabaseAdmin
+      .from("orders")
+      .insert({
+        order_number: data.orderId,
+        customer_name: data.nombre,
+        customer_email: data.email,
+        customer_phone: data.telefono,
+        delivery_method: data.entrega,
+        department: data.departamento,
+        municipality: data.municipio,
+        address: data.direccion,
+        reference: data.referencia,
+        payment_method: data.pago,
+        items: data.items,
+        subtotal: data.subtotal,
+        shipping: data.envio,
+        total: data.total,
+      })
+      .select("id")
+      .single();
+    if (dbError) console.error("No se pudo guardar el pedido:", dbError.message);
+
+    const markSent = async () => {
+      if (savedOrder) await supabaseAdmin.from("orders").update({ email_sent: true }).eq("id", savedOrder.id);
+    };
+
     if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
       return { sent: false, error: "Email no configurado" as const };
     }
@@ -103,6 +130,7 @@ export const sendOrderEmail = createServerFn({ method: "POST" })
       return { sent: false, error: `No se pudo enviar el correo (${response.status})` };
     }
 
+    await markSent();
     return { sent: true as const };
   });
 
@@ -119,6 +147,25 @@ export const sendContactEmail = createServerFn({ method: "POST" })
     const RESEND_API_KEY = process.env["RESEND_API_KEY"];
     const SALES_EMAIL = process.env["SALES_EMAIL"] ?? "mike.villatoro@hotmail.com";
     const FROM = process.env["ORDERS_FROM_EMAIL"] ?? "Nahual Auto <onboarding@resend.dev>";
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: savedMsg, error: dbError } = await supabaseAdmin
+      .from("contact_messages")
+      .insert({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        subject: data.subject,
+        channel: data.channel,
+        message: data.message,
+      })
+      .select("id")
+      .single();
+    if (dbError) console.error("No se pudo guardar el mensaje:", dbError.message);
+
+    const markSent = async () => {
+      if (savedMsg) await supabaseAdmin.from("contact_messages").update({ email_sent: true }).eq("id", savedMsg.id);
+    };
 
     if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
       return { sent: false, error: "Email no configurado" as const };
@@ -157,5 +204,6 @@ export const sendContactEmail = createServerFn({ method: "POST" })
       return { sent: false, error: `No se pudo enviar el correo (${response.status})` };
     }
 
+    await markSent();
     return { sent: true as const };
   });
