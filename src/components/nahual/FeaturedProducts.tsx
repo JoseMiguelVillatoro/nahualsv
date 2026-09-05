@@ -4,7 +4,8 @@ import type { Product } from "./products";
 import { ProductCard } from "./ProductCard";
 
 export function FeaturedProducts({ products }: { products: Product[] }) {
-  const loop = [...products, ...products];
+  const featured = products.filter((p) => p.featured);
+  const loop = [...featured, ...featured];
   const trackRef = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);
   const [hovered, setHovered] = useState<number | null>(null);
