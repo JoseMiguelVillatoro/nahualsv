@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ProductoSlugRouteImport } from './routes/producto.$slug'
 import { Route as ApiPublicImgSplatRouteImport } from './routes/api/public/img/$'
@@ -17,6 +18,11 @@ import { Route as ApiPublicImgSplatRouteImport } from './routes/api/public/img/$
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -37,12 +43,14 @@ const ApiPublicImgSplatRoute = ApiPublicImgSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRoute
   '/producto/$slug': typeof ProductoSlugRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRoute
   '/producto/$slug': typeof ProductoSlugRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
@@ -50,20 +58,29 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRoute
   '/producto/$slug': typeof ProductoSlugRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/checkout' | '/producto/$slug' | '/api/public/img/$'
+  fullPaths:
+    '/' | '/auth' | '/checkout' | '/producto/$slug' | '/api/public/img/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/checkout' | '/producto/$slug' | '/api/public/img/$'
-  id: '__root__' | '/' | '/checkout' | '/producto/$slug' | '/api/public/img/$'
+  to: '/' | '/auth' | '/checkout' | '/producto/$slug' | '/api/public/img/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/checkout'
+    | '/producto/$slug'
+    | '/api/public/img/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   CheckoutRoute: typeof CheckoutRoute
   ProductoSlugRoute: typeof ProductoSlugRoute
   ApiPublicImgSplatRoute: typeof ApiPublicImgSplatRoute
@@ -76,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -104,6 +128,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   CheckoutRoute: CheckoutRoute,
   ProductoSlugRoute: ProductoSlugRoute,
   ApiPublicImgSplatRoute: ApiPublicImgSplatRoute,
