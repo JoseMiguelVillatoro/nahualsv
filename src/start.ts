@@ -1,7 +1,9 @@
 import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/react-start";
 
 import { renderErrorPage } from "./lib/error-page";
-import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
+// Reemplaza intencionalmente al adjuntador generado: este no lanza error
+// cuando no hay cliente de autenticación disponible.
+import { attachAuth } from "./lib/auth-attach";
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
